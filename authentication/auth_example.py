@@ -14,7 +14,6 @@ API_SECRET = 'YOUR_API_SECRET' # From the developer portal
 
 # The request method and endpoint
 API_URL = 'https:#api-sandbox.bitpesa.co/v1/senders'
-API_METHOD = 'POST'
 
 # Request-specific data
 nonce = uuid.uuid4()# Must be unique per request
@@ -73,4 +72,5 @@ try:
 except:
 	_error = str(sys.exc_info()[1])
 	print _error
-
+	
+#TODO Add expected response
