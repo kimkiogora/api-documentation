@@ -63,8 +63,8 @@ myheaders = [
   'Accept: application/json',
   'Content-Type: application/json',
   'Authorization-Key: ' . API_KEY,
-  'Authorization-Nonce: ' . $nonce,
-  'Authorization-Signature: ' . $auth_signature
+  'Authorization-Nonce: ' . nonce,
+  'Authorization-Signature: ' . auth_signature
 ]
 
 try:
