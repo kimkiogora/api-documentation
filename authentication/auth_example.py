@@ -18,8 +18,7 @@ API_METHOD = 'POST'
 
 # Request-specific data
 nonce = uuid.uuid4()# Must be unique per request
-body = json.loads({
-	'sender': {
+body = json.dumps({'sender': {
 	    'country': 'UG',
 	    'phone_country': 'UG',
 	    'phone_number': '752403639',
@@ -31,41 +30,41 @@ body = json.loads({
 	    'postal_code': '798983',
 	    'birth_date': '1970-01-01',
 	    'documents': [{
-	        'upload':
-	          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAACXBIWXMAAAsT\nAAALEwEAmpwYAAAAB3RJTUUH4gEeCTEzbKJEHgAAAB1pVFh0Q29tbWVudAAA\nAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAADElEQVQI12P4z8AAAAMBAQAY\n3Y2wAAAAAElFTkSuQmCC',
+	        'upload':'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAACXBIWXMAAAsT\nAAALEwEAmpwYAAAAB3RJTUUH4gEeCTEzbKJEHgAAAB1pVFh0Q29tbWVudAAA\nAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAADElEQVQI12P4z8AAAAMBAQAY\n3Y2wAAAAAElFTkSuQmCC',
 	        'upload_file_name': 'passport.png',
 	        'metadata': { 'meta': 'data' }
 	      }
 	    ],
 	    'ip': '127.0.0.1',
 	    'metadata': { 'meta': 'data' }
-  }
-})
+  }})
 
 hash = hashlib.sha512()
 hash.update(body)
 body_hash = hash.hexdigest()
 
 to_sign = [
-	nonce,
+	str(nonce),
 	API_METHOD,
 	API_URL,
 	body_hash
 ]
+
 to_sign = '&'.join(to_sign)
 
-digest_maker =  hmac.new(API_SECRET, '', hashlib.sha512)
-digest_maker = digest_maker.update(to_sign)
+auth_signature =  hmac.new(API_SECRET, to_sign, hashlib.sha512).hexdigest()
 
-auth_signature = digest_maker.hexdigest()
+print 'DIGEST %r' % auth_signature
 
 myheaders = [
   'Accept: application/json',
   'Content-Type: application/json',
-  'Authorization-Key: ' . API_KEY,
-  'Authorization-Nonce: ' . nonce,
-  'Authorization-Signature: ' . auth_signature
+  'Authorization-Key: ' + API_KEY,
+  'Authorization-Nonce: ' + str(nonce),
+  'Authorization-Signature: ' + str(auth_signature)
 ]
+
+print 'Send request %s to URL %s headers %r' % (body,API_URL, myheaders)
 
 try:
 	print 'Send request %s to URL %s' % (body,API_URL)
@@ -74,3 +73,4 @@ try:
 except:
 	_error = str(sys.exc_info()[1])
 	print _error
+
